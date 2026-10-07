@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07152f">
+<title>PeaceConnect — Help Simulation</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0; min-height:100vh; font-family:Arial,Helvetica,sans-serif;
+ color:#fff; background:
+ radial-gradient(circle at 20% 10%,#244b8f 0,transparent 32%),
+ radial-gradient(circle at 90% 20%,#164d63 0,transparent 30%),
+ linear-gradient(145deg,#061126,#0b1e3b 55%,#07152b);
+ display:flex; justify-content:center; align-items:center; padding:20px;
+}
+.app{width:min(430px,100%); position:relative}
+.card{
+ background:rgba(10,25,52,.78); border:1px solid rgba(255,255,255,.13);
+ box-shadow:0 20px 60px rgba(0,0,0,.45); backdrop-filter:blur(16px);
+ border-radius:30px; padding:25px 20px; overflow:hidden;
+}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#52e3c2,#3c8cff);display:grid;place-items:center;font-size:25px;box-shadow:0 8px 25px #1b6fa855}
+h1{font-size:28px;margin:0;letter-spacing:.3px}
+.tag{color:#a9c5e9;font-size:13px;margin:0 0 22px 60px}
+.hero{text-align:center;padding:8px 0 18px}
+.hero h2{font-size:19px;margin:0 0 7px}
+.hero p{color:#a9bad4;font-size:13px;line-height:1.5;margin:0 auto;max-width:320px}
+.help{
+ margin:28px auto 20px;width:190px;height:190px;border-radius:50%;
+ border:8px solid rgba(255,255,255,.09);
+ background:radial-gradient(circle,#ff5d69,#d51f39 68%,#9c1027);
+ color:white;font-weight:900;font-size:26px;letter-spacing:1px;
+ box-shadow:0 0 0 0 rgba(255,55,75,.55),0 18px 40px rgba(210,30,55,.35);
+ cursor:pointer;transition:.18s;position:relative;
+}
+.help:before{content:"";position:absolute;inset:-18px;border-radius:50%;border:2px solid rgba(255,92,105,.2)}
+.help:hover{transform:scale(1.03)}
+.help:active{transform:scale(.96)}
+.help.pulse{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,55,75,.55),0 18px 40px rgba(210,30,55,.35)}
+50%{box-shadow:0 0 0 22px rgba(255,55,75,0),0 18px 45px rgba(210,30,55,.55)}}
+.status{min-height:43px;text-align:center;color:#b8cae2;font-size:13px;padding:11px;border-radius:14px;background:rgba(255,255,255,.05)}
+.panel{display:none;margin-top:15px}
+.panel.show{display:block;animation:up .35s ease}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.alert-title{font-weight:800;font-size:16px;margin-bottom:12px}
+.item{display:flex;align-items:center;gap:12px;padding:12px;margin:8px 0;border-radius:15px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.06)}
+.icon{font-size:22px;width:32px;text-align:center}
+.item b{font-size:13px;display:block}
+.small{font-size:11px;color:#94aac7;margin-top:3px}
+.badge{margin-left:auto;font-size:11px;padding:5px 8px;border-radius:20px;background:#28405f;color:#9db4d0}
+.badge.ok{background:#124d45;color:#6ff0d2}
+.footer{margin-top:16px;text-align:center;color:#6f89aa;font-size:10px;line-height:1.5}
+.reset{display:none;margin:14px auto 0;border:0;border-radius:12px;padding:10px 16px;background:#203a62;color:white;cursor:pointer}
+.reset.show{display:block}
+.final-alert{display:none;margin-top:14px;padding:16px;border-radius:18px;text-align:center;
+ background:linear-gradient(135deg,#123f50,#164d45);border:1px solid #55e6c0;
+ box-shadow:0 0 25px rgba(70,230,190,.18);animation:up .4s ease}
+.final-alert.show{display:block}
+.final-alert strong{display:block;font-size:19px;margin-bottom:5px}
+.final-alert span{font-size:12px;color:#b9e8dc}
+.note{margin-top:14px;padding:10px 12px;border-radius:12px;background:rgba(66,174,255,.08);color:#9ebce0;font-size:10px;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="app">
+ <div class="card">
+  <div class="brand">
+   <div class="logo">🕊️</div>
+   <h1>PeaceConnect</h1>
+  </div>
+  <p class="tag">Connecting people • Supporting peace • Getting help</p>
+
+  <div class="hero">
+   <h2>Need help?</h2>
+   <p>Press the button to simulate an emergency support connection.</p>
+   <button class="help" id="help">HELP<br><span style="font-size:17px">SOS</span></button>
+  </div>
+
+  <div class="status" id="status">Ready — press HELP to start the simulation.</div>
+
+  <div class="panel" id="panel">
+   <div class="alert-title">🚨 Help alert activated</div>
+   <div class="item"><div class="icon">📍</div><div><b>Locating Emergency Services</b><div class="small" id="eText">Searching nearby services...</div></div><div class="badge" id="eBadge">SEARCH</div></div>
+   <div class="item"><div class="icon">👨‍👩‍👧</div><div><b>Locating Family & Trusted Contacts</b><div class="small" id="fText">Waiting for connection...</div></div><div class="badge" id="fBadge">WAIT</div></div>
+   <div class="item"><div class="icon">🤝</div><div><b>Locating Support Networks</b><div class="small" id="lText">Waiting for connection...</div></div><div class="badge" id="lBadge">WAIT</div></div>
+   <div class="item"><div class="icon">👥</div><div><b>Locating People Nearby</b><div class="small" id="pText">Waiting for connection...</div></div><div class="badge" id="pBadge">WAIT</div></div>
+   <div class="final-alert" id="finalAlert">
+    <strong>🚑 HELP IS ON THE WAY</strong>
+    <span>Emergency support has been contacted in this simulation.</span>
+  </div>
+  <div class="note">This is a school-project simulation. No real emergency message, call, location sharing, or alert is sent.</div>
+  </div>
+  <button class="reset" id="reset">↻ Restart simulation</button>
+  <div class="footer">PeaceConnect prototype • For demonstration only</div>
+ </div>
+</div>
+
+<script>
+const help=document.getElementById('help'), status=document.getElementById('status');
+const panel=document.getElementById('panel'), reset=document.getElementById('reset');
+const rows=[
+ ['eText','eBadge','Located ✓'],
+ ['fText','fBadge','Located ✓'],
+ ['lText','lBadge','Located ✓'],
+ ['pText','pBadge','Located ✓']
+];
+
+let audioCtx=null, sirenTimer=null, vibrationTimer=null;
+
+function beep(freq=900,dur=.28,delay=0,volume=.46){
+ setTimeout(()=>{
+  try{
+   const C=window.AudioContext||window.webkitAudioContext; if(!C)return;
+   if(!audioCtx) audioCtx=new C();
+   const c=audioCtx, o=c.createOscillator(), g=c.createGain();
+   o.frequency.value=freq; o.type='sawtooth'; g.gain.value=.0001;
+   o.connect(g); g.connect(c.destination); o.start();
+   g.gain.exponentialRampToValueAtTime(volume,c.currentTime+.015);
+   g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+dur);
+   o.stop(c.currentTime+dur+.03);
+  }catch(e){}
+ },delay);
+}
+
+function startContinuousAlert(){
+  stopContinuousAlert();
+  let high=true;
+  const siren=()=>{
+    beep(high?1050:620,.42,0,.52);
+    high=!high;
+  };
+  siren();
+  sirenTimer=setInterval(siren,470);
+
+  if(navigator.vibrate){
+    navigator.vibrate([280,100,280,100,500]);
+    vibrationTimer=setInterval(()=>navigator.vibrate([280,100,280,100,500]),1400);
+  }
+}
+
+function stopContinuousAlert(){
+  if(sirenTimer){clearInterval(sirenTimer);sirenTimer=null;}
+  if(vibrationTimer){clearInterval(vibrationTimer);vibrationTimer=null;}
+  if(navigator.vibrate) navigator.vibrate(0);
+}
+
+
+function run(){
+ help.disabled=true; help.classList.add('pulse'); panel.classList.add('show');
+ status.textContent='🚨 Emergency alert active — locating and contacting support...';
+ startContinuousAlert();
+
+ rows.forEach(([t,b],i)=>{
+  setTimeout(()=>{
+   document.getElementById(t).textContent='Contact located — connection established';
+   const badge=document.getElementById(b);
+   badge.textContent='CONTACTED ✓';
+   badge.classList.add('ok');
+   beep(1180,.16,0,.38);
+  },1200+i*1150);
+ });
+
+ setTimeout(()=>{
+   stopContinuousAlert();
+   status.textContent='✓ All support connections completed.';
+   help.classList.remove('pulse');
+   document.getElementById('finalAlert').classList.add('show');
+   reset.classList.add('show');
+   beep(780,.18,0,.40); beep(1050,.22,200,.40); beep(1320,.28,450,.40);
+ },6000);
+}
+help.addEventListener('click',run);
+reset.addEventListener('click',()=>{
+ location.reload();
+});
+</script>
+</body>
+</html>
